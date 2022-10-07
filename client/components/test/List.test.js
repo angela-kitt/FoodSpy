@@ -101,6 +101,14 @@ describe('<List/>', () => {
     expect(clicked).not.toBeNull()
     expect(clicked).toBeTruthy()
   })
+  it('onClick event on image works', () => {
+    render(<List />, { wrapper: BrowserRouter })
+
+    const button = screen.getAllByRole('button')
+    const clicked = fireEvent.click(button[0], { shiftKey: true })
+    expect(clicked).not.toBeNull()
+    expect(clicked).toBeTruthy()
+  })
   it('displays compare prices button correctly', async () => {
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)

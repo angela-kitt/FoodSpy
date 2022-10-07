@@ -2,6 +2,7 @@ import React from 'react'
 import '@testing-library/jest-dom'
 import { screen, render, fireEvent } from '@testing-library/react'
 import { useDispatch, useSelector } from 'react-redux'
+import * as redux from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import Items from '../Items'
@@ -18,6 +19,12 @@ const fakeAllItems = [
   },
 ]
 
+// const state = { fakeAllItems }
+
+// jest
+//   .spyOn(redux, 'useSelector')
+//   .mockImplementation((callback) => callback(state))
+
 jest.mock('../../actions/list')
 jest.mock('react-redux')
 const getListMockReturn = jest.fn()
@@ -31,10 +38,15 @@ describe('<Items />', () => {
     render(<Items />, { wrapper: BrowserRouter })
 
     const description = screen.getByText(/2L lite blue milk/i)
-
     expect(fakeDispatch).toHaveBeenCalledWith(getListMockReturn)
     expect(description).toHaveTextContent('milk')
   })
+  // it('gets data from the state', () => {
+  //   render(<Items />, { wrapper: BrowserRouter })
+
+  //   const itemName = screen.findByText(fakeAllItems.name)
+  //   expect(itemName).toBeTruthy()
+  // })
   it('displays first heading correctly', () => {
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)
@@ -44,14 +56,18 @@ describe('<Items />', () => {
     expect(headings[0]).toHaveTextContent('Sorry, no results found')
   })
   it('displays check prices button correctly', async () => {
+    const user = userEvent.setup()
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)
     render(<Items />, { wrapper: BrowserRouter })
 
-    const priceButton = screen.getAllByRole('button', { name: 'Check Prices' })
-    const clicked = await fireEvent.click(priceButton[0], { shiftKey: true })
+    const priceButton = screen.getAllByRole('button', {
+      name: 'Check Prices',
+    })
+    const clicked = await user.click(priceButton[0], { shiftKey: true })
     expect(priceButton[0]).toBeTruthy()
     expect(clicked).toBeFalsy()
+    expect(clicked).not.toBeNull()
   })
   it('displays item images correctly', () => {
     useSelector.mockReturnValue(fakeAllItems)
@@ -73,17 +89,15 @@ describe('<Items />', () => {
     expect(image[0]).toBeTruthy()
     expect(click).toBeTruthy()
   })
-  it('keydown item images works', async () => {
-    useSelector.mockReturnValue(fakeAllItems)
-    useDispatch.mockReturnValue(fakeDispatch)
+  it('keydown on item images works', () => {
     render(<Items />, { wrapper: BrowserRouter })
 
-    const key = screen.getAllByTestId('imageKeyDown')
-    const keyDown = await fireEvent.keyPress(key[0], {
+    const key = screen.getByTestId('imageKeyDown')
+    const keyDown = fireEvent.keyDown(key, {
       key: 'Enter',
       keyCode: 13,
+      charCode: 13,
     })
-
     expect(keyDown).toBeTruthy()
   })
 })
