@@ -1,7 +1,7 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 import { Provider } from 'react-redux'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 
@@ -48,11 +48,12 @@ describe('<Basket />', () => {
         </BrowserRouter>
       </Provider>
     )
-    const minusButton = screen.findByRole('button', { name: /-/i })
-    user.click(minusButton, { shiftKey: true })
-    expect.assertions(2)
+    const minusButton = screen.findAllByRole('button')
+    const clicked = user.click(minusButton[0], { shiftKey: true })
+    expect.assertions(3)
     expect(minusButton).toBeTruthy()
     expect(minusButton).not.toBeNull()
+    expect(clicked).toBeTruthy()
   })
   it('displays plus button', async () => {
     const user = userEvent.setup()
@@ -64,9 +65,10 @@ describe('<Basket />', () => {
       </Provider>
     )
     const plusButton = screen.findByRole('button', { name: '+' })
-    user.click(plusButton, { shiftKey: true })
-    expect.assertions(2)
+    const clicked = user.click(plusButton, { shiftKey: true })
+    expect.assertions(3)
     expect(plusButton).toBeTruthy()
     expect(plusButton).not.toBeNull()
+    expect(clicked).toBeTruthy()
   })
 })

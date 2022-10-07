@@ -77,23 +77,42 @@ describe('<List/>', () => {
     const levelTwoHeading = screen.getAllByRole('heading', { level: 2 })
     expect(levelTwoHeading).toHaveLength(2)
   })
-  it('onKeyDown event on image initiates getPrice dispatch', () => {
+  it('onKeyDown event on image initiates getPrice dispatch', async () => {
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)
     render(<List />, { wrapper: BrowserRouter })
 
     const button = screen.getAllByRole('button')
-    fireEvent.keyDown(button[0], { key: 'Enter', keyCode: 13 })
+    const key = await fireEvent.keyDown(button[0], {
+      key: 'Enter',
+      keyCode: 13,
+    })
     expect(fakeDispatch).toHaveBeenCalledWith(getPriceMockReturn)
+    expect(key).toBeTruthy()
     expect(getPrice.mock.calls[0][0]).toBe(fakeAllItems[0].id)
   })
-  it('onClick event on image sets basket', () => {
+  it('onClick event on image sets basket', async () => {
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)
     render(<List />, { wrapper: BrowserRouter })
 
-    const click = screen.getAllByRole('button')
-    fireEvent.click(click[0], { shiftKey: true })
-    expect(click[0]).not.toBeNull()
+    const button = screen.getAllByRole('button')
+    const clicked = await fireEvent.click(button[0], { shiftKey: true })
+    expect(clicked).not.toBeNull()
+    expect(clicked).toBeTruthy()
+  })
+  it('displays compare prices button correctly', async () => {
+    useSelector.mockReturnValue(fakeAllItems)
+    useDispatch.mockReturnValue(fakeDispatch)
+    render(<List />, { wrapper: BrowserRouter })
+
+    const priceButton = screen.getAllByRole('button', {
+      name: 'Compare Prices',
+    })
+    const clicked = await fireEvent.click(priceButton[0], { shiftKey: true })
+    expect(priceButton[0]).toBeTruthy()
+    expect(priceButton).toHaveLength(2)
+    expect(clicked).not.toBeNull()
+    expect(clicked).toBeFalsy()
   })
 })
