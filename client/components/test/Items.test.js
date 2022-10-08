@@ -2,7 +2,6 @@ import React from 'react'
 import '@testing-library/jest-dom'
 import { screen, render, fireEvent } from '@testing-library/react'
 import { useDispatch, useSelector } from 'react-redux'
-import * as redux from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import Items from '../Items'
@@ -18,12 +17,6 @@ const fakeAllItems = [
     price: 3.95,
   },
 ]
-
-// const state = { fakeAllItems }
-
-// jest
-//   .spyOn(redux, 'useSelector')
-//   .mockImplementation((callback) => callback(state))
 
 jest.mock('../../actions/list')
 jest.mock('react-redux')
@@ -41,12 +34,6 @@ describe('<Items />', () => {
     expect(fakeDispatch).toHaveBeenCalledWith(getListMockReturn)
     expect(description).toHaveTextContent('milk')
   })
-  // it('gets data from the state', () => {
-  //   render(<Items />, { wrapper: BrowserRouter })
-
-  //   const itemName = screen.findByText(fakeAllItems.name)
-  //   expect(itemName).toBeTruthy()
-  // })
   it('displays first heading correctly', () => {
     useSelector.mockReturnValue(fakeAllItems)
     useDispatch.mockReturnValue(fakeDispatch)

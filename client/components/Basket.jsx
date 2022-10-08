@@ -14,7 +14,7 @@ function Basket({ basket, setBasket }) {
   })
 
   Object.keys(basket || {}).forEach((itemId) => {
-    allItems.forEach((complexData) => {
+    allItems?.forEach?.((complexData) => {
       if (complexData.item_id == itemId) {
         runningTotal[complexData.location] =
           runningTotal[complexData.location] +
